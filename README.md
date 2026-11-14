@@ -33,13 +33,12 @@ DRM 送到 SPI LCD，音频经 MPP AO 送到板载 codec：
 repo init -u https://gitcode.com/HiSpark/hi_aiot_solution_manifest -b main -g linux
 repo sync -j8
 
-# 2. 把本仓库拷进 samples 目录（目录名建议保持 media_player，编译命令要用到）
-cd hi_aiot_solution
-git clone https://github.com/ZephyraSkye/hi3516cv610-media-player.git
-cp -r hi3516cv610-media-player apps/cv610_ev_board/samples/media_player
+# 2. 把本仓库放进 samples 目录（目录名保持 media_player，编译命令要用到）
+git clone https://github.com/ZephyraSkye/hi3516cv610-media-player.git /tmp/media_player
+cp -r /tmp/media_player hi_aiot_solution/apps/cv610_ev_board/samples/media_player
 
-# 3. 编译
-cd apps/../..
+# 3. 编译（在源码树根目录执行）
+cd hi_aiot_solution
 bash scripts/build.sh distclean
 bash scripts/build.sh build --target cv610_ev_board samples media_player
 ```
