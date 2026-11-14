@@ -1,0 +1,54 @@
+#!/bin/sh
+# =============================================================================
+# udhcpc default.script — DHCP 获取 IP 后的配置脚本
+#
+# udhcpc 在 DHCP 生命周期各阶段调用此脚本，传入以下环境变量：
+#   $1          = action (deconfig/bound/renew/release)
+#   $subnet     = 子网掩码
+#   $router     = 默认网关
+#   $dns        = DNS 服务器
+#   $ip         = 分配的 IP 地址
+#   $broadcast  = 广播地址
+#   $hostname   = 主机名
+# =============================================================================
+
+case "$1" in
+    deconfig)
+        # 释放 IP 时重置网卡为 0.0.0.0
+        ifconfig "$interface" 0.0.0.0
+        ;;
+
+    bound|renew)
+        # 设置 IP、掩码、广播
+        ifconfig "$interface" "$ip"
+        [ -n "$subnet" ] && ifconfig "$interface" netmask "$subnet"
+        [ -n "$broadcast" ] && ifconfig "$interface" broadcast "$broadcast"
+
+        # 设置默认网关（先删旧路由再加新路由）
+        if [ -n "$router" ]; then
+            while route del default gw 0.0.0.0 dev "$interface" 2>/dev/null; do
+                :
+            done
+            set -f
+            for gw in $router; do
+                route add default gw "$gw" dev "$interface"
+            done
+            set +f
+        fi
+
+        # 更新 /etc/resolv.conf
+        if [ -n "$dns" ]; then
+            > /etc/resolv.conf
+            [ -n "$search" ] && echo "search $search" >> /etc/resolv.conf
+            set -f
+            for ns in $dns; do
+                echo "nameserver $ns" >> /etc/resolv.conf
+            done
+            set +f
+        fi
+
+        echo "[udhcpc] $interface: ip=$ip mask=$subnet gw=$router dns=$dns" > /dev/kmsg
+        ;;
+esac
+
+exit 0

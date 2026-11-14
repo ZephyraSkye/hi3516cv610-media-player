@@ -1,0 +1,18 @@
+# 强制文本文件以 LF 入库、LF 检出（Windows 上 clone 也不会变成 CRLF）
+* text=auto eol=lf
+
+*.sh      text eol=lf
+*.patch   text eol=lf
+*.dtsi    text eol=lf
+*.c       text eol=lf
+*.h       text eol=lf
+*.txt     text eol=lf
+*.md      text eol=lf
+CMakeLists.txt text eol=lf
+
+# 二进制，不做换行转换
+*.a       binary
+*.so      binary
+*.mp4     binary
+*.ko      binary
+*.bin     binary

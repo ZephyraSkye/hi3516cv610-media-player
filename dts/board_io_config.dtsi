@@ -1,0 +1,125 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * board_io_config.dtsi — 板级引脚配置
+ */
+
+/ {
+    board_io_config {
+        compatible = "vendor,board-io-config";
+
+        chip-info {
+            chip-model = "Hi3516CV610";
+            package = "QFN";
+        };
+
+        pin-cfg@6 {
+            pin = <6>;                            /* 引脚号 */
+            gpio-num = "GPIO0_0";                 /* GPIO 号 */
+            function = "GPIO0_0";                 /* 功能名 */
+            pull = "pull-up";                     /* 上下拉: pull-up / pull-down / none */
+            drive = "I02_level4";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@7 {
+            pin = <7>;                            /* 引脚号 */
+            gpio-num = "GPIO0_1";                 /* GPIO 号 */
+            function = "GPIO0_1";                 /* 功能名 */
+            pull = "pull-down";                   /* 上下拉: pull-up / pull-down / none */
+            drive = "I06_level8";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@18 {
+            pin = <18>;                           /* 引脚号 */
+            gpio-num = "GPIO7_4";                 /* GPIO 号 */
+            function = "PWM1_OUT7";               /* 功能名 */
+            pull = "pull-up";                     /* 上下拉: pull-up / pull-down / none */
+            drive = "I02_level4";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@19 {
+            pin = <19>;                           /* 引脚号 */
+            gpio-num = "GPIO7_5";                 /* GPIO 号 */
+            function = "GPIO7_5";                 /* 功能名 */
+            pull = "pull-up";                     /* 上下拉: pull-up / pull-down / none */
+            drive = "I02_level4";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@29 {
+            pin = <29>;                           /* 引脚号 */
+            gpio-num = "GPIO1_4";                 /* GPIO 号 */
+            function = "I2C1_SCL";                /* 功能名 */
+            pull = "pull-down";                   /* 上下拉: pull-up / pull-down / none */
+            drive = "I02_level4";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+            input-enable;                         /* 输入使能 */
+        };
+
+        pin-cfg@30 {
+            pin = <30>;                           /* 引脚号 */
+            gpio-num = "GPIO1_5";                 /* GPIO 号 */
+            function = "I2C1_SDA";                /* 功能名 */
+            pull = "pull-down";                   /* 上下拉: pull-up / pull-down / none */
+            drive = "I02_level4";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+            input-enable;                         /* 输入使能 */
+        };
+
+        pin-cfg@46 {
+            pin = <46>;                           /* 引脚号 */
+            gpio-num = "GPIO7_0";                 /* GPIO 号 */
+            function = "SPI0_CSN0";               /* 功能名 */
+            pull = "pull-down";                   /* 上下拉: pull-up / pull-down / none */
+            drive = "I06_level8";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@82 {
+            pin = <82>;                           /* 引脚号 */
+            gpio-num = "GPIO4_2";                 /* GPIO 号 */
+            function = "GPIO4_2";                 /* 功能名 */
+            pull = "pull-up";                     /* 上下拉: pull-up / pull-down / none */
+            drive = "EMMC I0_level16";            /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@84 {
+            pin = <84>;                           /* 引脚号 */
+            gpio-num = "GPIO4_0";                 /* GPIO 号 */
+            function = "SPI0_SDO";                /* 功能名 */
+            pull = "pull-down";                   /* 上下拉: pull-up / pull-down / none */
+            drive = "EMMC I0_level16";            /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@85 {
+            pin = <85>;                           /* 引脚号 */
+            gpio-num = "GPIO3_7";                 /* GPIO 号 */
+            function = "SPI0_SCLK";               /* 功能名 */
+            pull = "pull-up";                     /* 上下拉: pull-up / pull-down / none */
+            drive = "EMMC I0_level16";            /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@87 {
+            pin = <87>;                           /* 引脚号 */
+            gpio-num = "GPIO3_5";                 /* GPIO 号 */
+            function = "GPIO3_5";                 /* 功能名 */
+            pull = "pull-up";                     /* 上下拉: pull-up / pull-down / none */
+            drive = "I02_level4";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+
+        pin-cfg@45 {
+            pin = <45>;                           /* 引脚号 */
+            gpio-num = "GPIO7_1";                 /* GPIO 号 */
+            function = "GPIO7_1";                 /* 功能名 */
+            pull = "pull-down";                   /* 上下拉: pull-up / pull-down / none */
+            drive = "I06_level8";                 /* 驱动档位 */
+            slew = "fast";                        /* 边沿: fast / slow */
+        };
+    };
+};

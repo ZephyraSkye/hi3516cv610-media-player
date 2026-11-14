@@ -1,0 +1,1 @@
+OSDRV_APP_OPT=KERNEL_CFG=hi3516cv610_drm_touch_defconfig BUSYBOX_CFG=config_debug_arm_a7_softfp_neon_udhcpc_tftp

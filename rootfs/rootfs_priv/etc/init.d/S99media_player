@@ -1,0 +1,48 @@
+#!/bin/sh
+# S99media_player — 开机启动播放器
+#
+# 注意：BSP 的 /etc/init.d/rcS 是 `$initscript`（不带参数）调用，因此本脚本
+# 默认行为就是"启动"，只在显式传 stop 时才停 —— 与 S80/S81/S90 的风格一致。
+#
+# 依赖：S81load3516cv610 已加载 MPP ko（其中 sys_config.ko 的 pin_mux() 会配置
+#       SPI 屏管脚），并已在 /root 启动 sdk_server。
+
+if [ "$1" = "stop" ]; then
+    killall media_player 2>/dev/null
+    exit 0
+fi
+
+echo "[media_player] starting ..."
+
+# 1) 板级 IO 配置（按 board_io_config.dtsi 配 pin，含 SPI 屏管脚）
+if [ -f /drv/ko/ot_board_io_cfg.ko ]; then
+    insmod /drv/ko/ot_board_io_cfg.ko 2>/dev/null && echo "[media_player] ot_board_io_cfg.ko ok"
+fi
+
+# 2) LCD 面板驱动（必须先于应用，DRM 才拿得到 card0）
+if [ -f /drv/lcd_panel.ko ]; then
+    insmod /drv/lcd_panel.ko 2>/dev/null && echo "[media_player] lcd_panel.ko ok"
+else
+    echo "[media_player] WARN: /drv/lcd_panel.ko 不存在，屏不会亮"
+fi
+
+# 2) 执行位兜底（打包时若丢了权限）
+[ -f /root/media_player ] && chmod 755 /root/media_player 2>/dev/null
+[ -f /root/start_media_player.sh ] && chmod 755 /root/start_media_player.sh 2>/dev/null
+
+# 3) sdk_server 由 S81 负责启动，这里仅确认
+if ! pidof sdk_server >/dev/null 2>&1 && [ -x /root/sdk_server ]; then
+    echo "[media_player] sdk_server 未运行，手动拉起"
+    /root/sdk_server >/dev/null 2>&1 &
+    sleep 1
+fi
+
+# 4) 应用（后台，日志 /root/media_player.log）
+if [ -x /root/media_player ] && [ -f /root/badapple.mp4 ]; then
+    /root/media_player /root/badapple.mp4 > /root/media_player.log 2>&1 &
+    echo "[media_player] app started (log: /root/media_player.log)"
+else
+    echo "[media_player] 跳过：media_player 或 badapple.mp4 不存在"
+fi
+
+exit 0

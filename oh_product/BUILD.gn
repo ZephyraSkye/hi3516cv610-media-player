@@ -1,0 +1,11 @@
+# Copyright (C) 2026 Hisilicon (Shanghai) Technologies Co., Ltd. All rights reserved.
+
+group("hispark_hi3516cv610_linux") {
+  deps = [
+    # Base vendor deps (init / system params / fstab / init.d)
+    "hals/utils/sys_param:vendor.para",
+    "init_configs",
+    "init_configs:init_fstab",
+    "init_configs:init_initd",
+  ]
+}

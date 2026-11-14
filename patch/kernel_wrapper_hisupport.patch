@@ -1,0 +1,13 @@
+index f9c3dc0..c1dcdbf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -90,6 +90,9 @@
+ 	pushd $(BUILD_DIR)/$(KERNEL_VER); patch -p1< ../linux-$(linux-version).patch;popd
+ 	pushd $(BUILD_DIR)/$(KERNEL_VER);patch -p1< ../linux-evboard-spi-nand.patch;popd;
+ 	pushd $(BUILD_DIR)/$(KERNEL_VER);patch -p1< ../linux-textofs.patch;popd;
++	pushd $(BUILD_DIR)/$(KERNEL_VER);patch --fuzz=3 -p4< ../ws73_lcd_kernel.patch;popd;
++	mkdir -p $(BUILD_DIR)/$(KERNEL_VER)/arch/arm/configs
++	cp -f $(BUILD_DIR)/hi3516cv610_drm_touch_defconfig $(BUILD_DIR)/$(KERNEL_VER)/arch/arm/configs/
+ endif
+ 
+ 	rm -f $(BUILD_DIR)/$(KERNEL_VER)/str_firmware.bin

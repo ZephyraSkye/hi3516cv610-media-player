@@ -1,0 +1,51 @@
+diff --git a/sdk/smp/a7_linux/source/interdrv/sysconfig/pin_mux.c b/sdk/smp/a7_linux/source/interdrv/sysconfig/pin_mux.c
+index 1a465aae4..0f6a17928 100644
+--- a/sdk/smp/a7_linux/source/interdrv/sysconfig/pin_mux.c
++++ b/sdk/smp/a7_linux/source/interdrv/sysconfig/pin_mux.c
+@@ -293,7 +293,7 @@ static void vi_pin_mux(int vi_intf_type, int board_type)
+     switch (vi_intf_type) {
+         case VI_MIPI_RX_MODE:
+             i2c_pin_mux(PIN_MUX_I2C_0);
+-            i2c_pin_mux(PIN_MUX_I2C_1);
+-            i2c_pin_mux(PIN_MUX_I2C_2);
++            /* i2c_pin_mux(PIN_MUX_I2C_1); */
++            /* i2c_pin_mux(PIN_MUX_I2C_2); */
+             mipi_rx_pin_mux(MIPI_RX_0);
+             break;
+@@ -352,6 +352,28 @@ static void amp_unmute_pin_mux(void)
+ #endif
+ }
+ 
++static void spi_lcd_pin_mux(void)
++{
++    void *iocfg_base = sys_config_get_reg_iocfg();
++    void *iocfg2_base = sys_config_get_reg_iocfg2();
++    void *iocfg3_base = sys_config_get_reg_iocfg3();
++
++    /* SPI panel */
++    sys_writel(iocfg_base, 0x0030, 0x1104);  /* GPIO3_7 SPI0_CLK */
++    sys_writel(iocfg_base, 0x0034, 0x1204);  /* GPIO4_0 SPI0_DO */
++    sys_writel(iocfg2_base, 0x0090, 0x1203); /* GPIO7_0 SPI0_CSN0 (CS) */
++    sys_writel(iocfg_base, 0x0004, 0x1200);  /* GPIO0_1 DC */
++    sys_writel(iocfg3_base, 0x0050, 0x1105); /* GPIO7_5 RST */
++    sys_writel(iocfg_base, 0x0028, 0x1100);  /* GPIO3_5 TE */
++    sys_writel(iocfg3_base, 0x0054, 0x1107); /* GPIO7_4 BL PWM1_OUT7 */
++
++    /* I2C1 touch */
++    sys_writel(iocfg3_base, 0x0004, 0x1201); /* GPIO1_4 I2C1_SCL */
++    sys_writel(iocfg3_base, 0x0000, 0x1201); /* GPIO1_5 I2C1_SDA */
++    sys_writel(iocfg_base, 0x003C, 0x1100);  /* GPIO4_2 TOUCH RST */
++    sys_writel(iocfg_base, 0x0000, 0x1100);  /* GPIO0_0 TOUCH INT */
++}
++
+ void pin_mux(void)
+ {
+     int vi_intf_type = sys_config_get_vi_intf_type();
+@@ -378,6 +400,7 @@ void pin_mux(void)
+     uart2_pin_mux(board_type);
+ 
+     amp_unmute_pin_mux();
++    spi_lcd_pin_mux();
+ 
+     sys_writel(reg_misc_base, 0x170, 0x0);  /* VGS & GZIP */
+     sys_writel(reg_misc_base, 0x174, 0x0);  /* ddrt MUX */

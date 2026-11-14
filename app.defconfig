@@ -1,0 +1,25 @@
+# media_player — 音视频播放器（DRM 局部刷新 + MPP AO）
+# 依赖：OS_DRM（libdrm）、COMP_ADAPTER + DRV_LCD_JD9853（lcd_panel.ko）
+#       SDK_BUILD_BSP 会带上 ws73_lcd 的 dts/pinmux 补丁（见 patch/）
+CONFIG_OS_DROPBEAR=y
+CONFIG_OS_DRM=y
+# CONFIG_OS_LVGL is not set
+# CONFIG_OS_OPENSSL is not set
+# CONFIG_OS_CURL is not set
+# CONFIG_OS_CJSON is not set
+# CONFIG_OS_MQTT is not set
+# CONFIG_OS_WPA_SUPPLICANT is not set
+# end of Open Source Libraries
+
+CONFIG_SDK_BUILD_BSP=y
+CONFIG_SDK_BSP_DEBUG=y
+CONFIG_SDK_BUILD_MPP=y
+# end of SDK Build
+
+CONFIG_COMP_ADAPTER=y
+CONFIG_DRV_BOARD_IO_CFG=y
+CONFIG_DRV_LCD_JD9853=y
+# CONFIG_DRV_LCD_ST7789V is not set
+# CONFIG_DRV_TOUCH_HYNITRON is not set
+CONFIG_BUILD_INSTALL=y
+# end of Build

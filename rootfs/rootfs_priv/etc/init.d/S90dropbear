@@ -1,0 +1,21 @@
+#!/bin/sh
+# =============================================================================
+# S90dropbear — 启动 dropbear SSH 服务
+#
+# - 首次启动自动生成 RSA host key（需要 /bin/dropbearkey 已在镜像内）
+# - -R：如 key 缺失由 dropbear 自行生成
+# - -p 22：监听 22 端口
+# =============================================================================
+
+DROPBEAR_KEY_DIR=/etc/dropbear
+
+mkdir -p "${DROPBEAR_KEY_DIR}"
+
+if [ ! -f "${DROPBEAR_KEY_DIR}/dropbear_rsa_host_key" ]; then
+    echo "[dropbear] generating RSA host key ..."
+    dropbearkey -t rsa -f "${DROPBEAR_KEY_DIR}/dropbear_rsa_host_key" >/dev/null 2>&1
+fi
+
+dropbear -R -p 22
+
+echo "[dropbear] SSH server started on port 22"

@@ -1,0 +1,15 @@
+# 编译产物
+build/
+_build/
+*.o
+# 注意：不要写 *.d —— 会把 init.d 目录一起忽略掉
+*.log
+.cache/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 注意：prebuilt/lib/*.a 是随仓库分发的预编译库，不要在此处加 *.a

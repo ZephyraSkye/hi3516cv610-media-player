@@ -1,0 +1,42 @@
+#!/bin/sh
+# =============================================================================
+# S80network — 网络初始化（优先内核 ip= 静态配置，否则 udhcpc 动态获取）
+#
+# BSP 默认的 S80network 仅解析内核 cmdline 的 ip= 参数，无 ip= 时直接退出；
+# 这里覆盖为 eth0 up + udhcpc，保证板子能自动从 DHCP 获取 IP/网关/DNS。
+# =============================================================================
+
+netdev=eth0
+
+# 内核 cmdline 指定静态 IP 时优先使用（例如 ip=192.168.1.10）
+for ipinfo in $(cat /proc/cmdline)
+do
+    case "$ipinfo" in
+        ip=*)
+            ipval="${ipinfo#ip=}"
+            if [ -n "$ipval" ] && [ "$ipval" != "-" ]; then
+                echo "[network] kernel ip= static: $netdev -> $ipval"
+                ifconfig "$netdev" "$ipval"
+            fi
+            ;;
+    esac
+done
+
+ifconfig lo 127.0.0.1
+
+# 固化 eth0 MAC（跨重启稳定，防止随机 MAC 导致 IP 漂移）：
+# hleth/femac-v2 驱动无持久 MAC 来源时每次开机随机分配，故先定型再 up。
+# 必须在 ifconfig eth0 up 之前调用——udhcpc 紧随其后按 MAC 分配 IP。
+/root/set_eth_mac.sh
+ifconfig "$netdev" up
+
+if [ -x /sbin/udhcpc ]; then
+    echo "[network] starting udhcpc on $netdev ..."
+    # -t 5/-T 2: 重试间隔；-n -q: 首次失败即退出，避免开机阻塞
+    udhcpc -i "$netdev" -s /usr/share/udhcpc/default.script -t 5 -T 2 -n -q
+else
+    echo "[network] WARNING: /sbin/udhcpc not found"
+fi
+
+echo "[network] $netdev config:"
+ifconfig "$netdev"

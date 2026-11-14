@@ -1,0 +1,38 @@
+#!/bin/sh
+# base：加载 MPP ko、sdk_server
+
+LOG_FILE="/tmp/load3516cv610.log"
+SDK_SOCK="/run/sdk_server/osal_uds_server.sock"
+SDK_WAIT_SEC=30
+
+echo "Loading Hi3516CV610 drivers..." >"${LOG_FILE}"
+
+# 加载脚本子目录
+if [ -d /drv/ko/load_ko ]; then
+    cd /drv/ko/load_ko/ || exit 1
+elif [ -d /drv/ko/load3516cv610 ]; then
+    cd /drv/ko/load3516cv610/ || exit 1
+else
+    echo "ERROR: no KO load directory found under /drv/ko/" >>"${LOG_FILE}"
+    exit 1
+fi
+./load3516cv610_20s_debug -i -sensor0 os04d10 >>"${LOG_FILE}" 2>&1
+
+cd /root/
+if [ -f ./sdk_server ]; then
+    chmod +x ./sdk_server 2>/dev/null
+    rm -f "$SDK_SOCK"
+    ./sdk_server >>"${LOG_FILE}" 2>&1 &
+    SDK_PID=$!
+    i=0
+    while [ "$i" -lt "$SDK_WAIT_SEC" ]; do
+        kill -0 "$SDK_PID" 2>/dev/null || break
+        [ -S "$SDK_SOCK" ] && break
+        i=$((i + 1))
+        sleep 1
+    done
+    [ -S "$SDK_SOCK" ] && echo "sdk_server is running" >>"${LOG_FILE}"
+else
+    echo "sdk_server not found, ko only" >>"${LOG_FILE}"
+fi
+exit 0
